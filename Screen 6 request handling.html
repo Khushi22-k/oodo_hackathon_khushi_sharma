@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Swap Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom colors extracted from image_d602c0.png */
+        :root {
+            --color-main-background: #F0F8FF; /* AliceBlue - very light blue/purple from image 1 background */
+            --color-dark-purple-header: #5E3B8F; /* Deep purple from image 1 header */
+            --color-accent-blue: #6A9BFF; /* Bright blue from image 1 'Request' button */
+            --color-cream-card-bg: #FFFFFF; /* White for card backgrounds, similar to image 1 */
+            --color-main-wrapper-bg: #F8F8F8; /* A very light grey for the main content wrapper */
+            --color-text-dark: #333333;
+            --color-text-light: #555555;
+            --color-green-status: #22C55E; /* Existing green for 'Accept' */
+            --color-red-status: #EF4444;   /* Existing red for 'Reject' */
+            --color-orange-status: #F97316; /* Existing orange for 'Pending' */
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: var(--color-main-background); /* Applied to body */
+            color: var(--color-text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Custom utility classes for new colors */
+        .bg-main-background { background-color: var(--color-main-background); }
+        .bg-dark-purple-header { background-color: var(--color-dark-purple-header); }
+        .bg-accent-blue { background-color: var(--color-accent-blue); }
+        .bg-cream-card-bg { background-color: var(--color-cream-card-bg); }
+        .bg-main-wrapper-bg { background-color: var(--color-main-wrapper-bg); }
+
+        .text-dark-purple-header { color: var(--color-dark-purple-header); }
+        .text-accent-blue { color: var(--color-accent-blue); }
+
+        .border-dark-purple-header { border-color: var(--color-dark-purple-header); }
+        .border-accent-blue { border-color: var(--color-accent-blue); }
+    </style>
+</head>
+<body class="bg-main-background flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
+
+    <!-- Top Header Section -->
+    <header class="w-full max-w-7xl flex justify-between items-center mb-8 px-4">
+        <div class="flex items-center space-x-2">
+            <span class="text-3xl font-bold text-dark-purple-header">Screen 6</span>
+            <span class="text-xl font-semibold text-text-light">Swap request</span>
+        </div>
+        <div class="flex items-center space-x-2 bg-dark-purple-header text-white px-4 py-2 rounded-full shadow-md">
+            <!-- Simple SVG for a play-like icon, similar to the screenshot -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-white">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+            <span class="font-bold text-lg">Big Bear</span>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <div class="w-full max-w-4xl bg-main-wrapper-bg p-6 sm:p-8 rounded-lg shadow-xl flex flex-col space-y-6">
+
+        <!-- Skill Swap Platform Header -->
+        <nav class="flex flex-col sm:flex-row justify-between items-center pb-4 border-b border-gray-200">
+            <h1 class="text-3xl font-extrabold text-dark-purple-header mb-4 sm:mb-0">Skill Swap Platform</h1>
+            <div class="flex items-center space-x-6">
+                <a href="#" class="text-lg font-medium text-dark-purple-header hover:text-purple-700">Home</a>
+                <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-dark-purple-header shadow-sm">
+                    <!-- Placeholder for User Profile Photo -->
+                    <img src="https://placehold.co/40x40/5E3B8F/FFFFFF?text=User" alt="User Profile" class="w-full h-full object-cover">
+                    <span class="absolute bottom-0 right-0 block h-2 w-2 rounded-full bg-green-500 ring-1 ring-white"></span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Filter and Search Section -->
+        <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
+            <div class="relative w-full sm:w-auto">
+                <select class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded-md leading-tight focus:outline-none focus:ring-2 focus:ring-dark-purple-header focus:border-transparent shadow-sm">
+                    <option>Pending</option>
+                    <option>Accepted</option>
+                    <option>Rejected</option>
+                    <option>All</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+            </div>
+            <div class="flex w-full sm:w-auto space-x-2">
+                <input type="text" placeholder="Search..." class="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-dark-purple-header focus:border-transparent shadow-sm">
+                <button class="bg-dark-purple-header text-white px-6 py-2 rounded-md hover:bg-purple-700 transition duration-300 shadow-md">Search</button>
+            </div>
+        </div>
+
+        <!-- Swap Request Cards Container -->
+        <div class="flex flex-col space-y-6 pt-4">
+
+            <!-- Swap Request Card 1 (Pending) -->
+            <div class="bg-cream-card-bg p-4 sm:p-6 rounded-lg shadow-md flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 border border-gray-200">
+                <div class="flex-shrink-0">
+                    <img src="https://placehold.co/80x80/5E3B8F/FFFFFF?text=Profile+Photo" alt="Profile Photo" class="w-20 h-20 rounded-full object-cover border-2 border-dark-purple-header">
+                </div>
+                <div class="flex-grow flex flex-col space-y-2 w-full">
+                    <h3 class="text-xl font-semibold text-text-dark">Marc Demo</h3>
+                    <div class="flex flex-wrap items-center space-x-2 text-sm">
+                        <span class="font-medium text-text-light">Skills Offered >></span>
+                        <span class="bg-gray-100 border border-gray-300 text-gray-700 px-3 py-1 rounded-full text-xs">Java Script</span>
+                    </div>
+                    <div class="flex flex-wrap items-center space-x-2 text-sm">
+                        <span class="font-medium text-text-light">Skill wanted >></span>
+                        <span class="bg-gray-100 border border-gray-300 text-gray-700 px-3 py-1 rounded-full text-xs">HTML/CSS</span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <span class="font-medium">Rating:</span> 3.9/5
+                    </div>
+                </div>
+                <div class="flex flex-col items-center md:items-end space-y-2 md:space-y-0 md:space-x-4 md:flex-row">
+                    <span class="text-lg font-bold text-orange-status">Status: Pending</span>
+                    <div class="flex space-x-2">
+                        <button class="bg-green-status text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300 shadow-sm">Accept</button>
+                        <button class="bg-red-status text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300 shadow-sm">Reject</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Swap Request Card 2 (Rejected) -->
+            <div class="bg-cream-card-bg p-4 sm:p-6 rounded-lg shadow-md flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 border border-gray-200">
+                <div class="flex-shrink-0">
+                    <img src="https://placehold.co/80x80/5E3B8F/FFFFFF?text=Profile+Photo" alt="Profile Photo" class="w-20 h-20 rounded-full object-cover border-2 border-dark-purple-header">
+                </div>
+                <div class="flex-grow flex flex-col space-y-2 w-full">
+                    <h3 class="text-xl font-semibold text-text-dark">Jane Doe</h3>
+                    <div class="flex flex-wrap items-center space-x-2 text-sm">
+                        <span class="font-medium text-text-light">Skills Offered >></span>
+                        <span class="bg-gray-100 border border-gray-300 text-gray-700 px-3 py-1 rounded-full text-xs">Graphic Design</span>
+                    </div>
+                    <div class="flex flex-wrap items-center space-x-2 text-sm">
+                        <span class="font-medium text-text-light">Skill wanted >></span>
+                        <span class="bg-gray-100 border border-gray-300 text-gray-700 px-3 py-1 rounded-full text-xs">Photography</span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <span class="font-medium">Rating:</span> 3.9/5
+                    </div>
+                </div>
+                <div class="flex flex-col items-center md:items-end space-y-2 md:space-y-0 md:space-x-4 md:flex-row">
+                    <span class="text-lg font-bold text-red-status">Status: Rejected</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center items-center space-x-2 mt-6">
+            <a href="#" class="px-3 py-1 rounded-md text-dark-purple-header hover:bg-dark-purple-header hover:text-white transition duration-300">
+                &lt;
+            </a>
+            <a href="#" class="px-3 py-1 rounded-md bg-dark-purple-header text-white">1</a>
+            <a href="#" class="px-3 py-1 rounded-md text-dark-purple-header hover:bg-dark-purple-header hover:text-white transition duration-300">2</a>
+            <a href="#" class="px-3 py-1 rounded-md text-dark-purple-header hover:bg-dark-purple-header hover:text-white transition duration-300">3</a>
+            <a href="#" class="px-3 py-1 rounded-md text-dark-purple-header hover:bg-dark-purple-header hover:text-white transition duration-300">
+                &gt;
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skill Swap Platform – Login</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Extend Tailwind with custom colors -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            lightpurple: '#EDE7FF', /* soft lavender */
+            cream: '#FFF7EE',       /* warm cream */
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-lightpurple to-cream flex flex-col">
+
+  <!-- Top nav bar -->
+  <header class="bg-white/70 backdrop-blur-sm shadow-sm">
+    <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
+      <h1 class="text-xl font-semibold tracking-wide">Skill Swap Platform</h1>
+      <a href="#" class="rounded-full border border-black/20 px-6 py-1.5 text-sm font-medium hover:bg-black/5 transition">
+        Home
+      </a>
+    </div>
+  </header>
+
+  <!-- Login card -->
+  <main class="flex flex-1 items-center justify-center px-4">
+    <form
+      class="w-full max-w-md rounded-3xl bg-white/70 backdrop-blur-md shadow-xl p-8 sm:p-10"
+      autocomplete="off"
+    >
+      <h2 class="mb-8 text-center text-2xl font-semibold">User Login</h2>
+
+      <!-- Email -->
+      <label class="block mb-6">
+        <span class="block mb-1 text-sm font-medium">Email</span>
+        <input
+          type="email"
+          required
+          class="w-full rounded-full border border-black/20 bg-white px-5 py-3 shadow-inner focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition"
+          placeholder="you@example.com" id="email_id_input"
+        />
+      </label>
+
+      <!-- Password -->
+      <label class="block mb-8">
+        <span class="block mb-1 text-sm font-medium">Password</span>
+        <input
+          type="password"
+          required
+          class="w-full rounded-full border border-black/20 bg-white px-5 py-3 shadow-inner focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition"
+          placeholder="••••••••" id="password_input"
+        />
+      </label>
+
+      <!-- Login button -->
+      <button
+        type="submit"
+        class="mx-auto block rounded-full bg-indigo-500/90 px-10 py-2.5 font-semibold text-white shadow-md hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition" id="login_values"
+      >
+        Login
+      </button>
+
+      <!-- Forgot link -->
+      <p class="mt-6 text-center text-sm">
+        <a href="#" class="text-indigo-600 hover:underline">Forgot username/password?</a>
+      </p>
+
+       <p class="mt-6 text-center text-sm">
+        <a href="create_account.html" class="text-indigo-600 hover:underline">Create Acoount</a>
+      </p>
+    </form>
+  </main>
+  <script>
+    document.getElementById('login_values').addEventListener('click', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('email_id_input').value;
+      const password = document.getElementById('password_input').value;
+
+      // Send values to backend for check_login_password
+      fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: password })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+           window.location.href='home page.html'
+          alert('Login successful!');
+          // window.location.href = '/profile'; // Example redirect
+        } else {
+          alert('Invalid email or password.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Login failed.');
+      });
+    });
+  </script>
+</body>
+</html>

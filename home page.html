@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skill Swap Platform – Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            lightpurple: "#F3E8FF",
+            cream: "#FFFDF5",
+            dark: "#2C2A4A"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-lightpurple to-cream text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-dark text-white py-4 shadow-md">
+    <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+      <h1 class="text-xl sm:text-2xl font-bold">Skill Swap Platform</h1>
+      <button class="bg-white text-dark px-4 py-1 rounded hover:bg-gray-100 text-sm" id="LoginButton">Login</button>
+       <script>
+        document.getElementById('LoginButton').addEventListener('click', function () {
+            window.location.href = 'login page.html';
+        });
+    </script>
+    </div>
+  </header>
+
+  <!-- Filter/Search -->
+  <div class="max-w-6xl mx-auto px-4 mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <select class="px-4 py-2 rounded border text-sm shadow w-full sm:w-auto">
+      <option>Availability</option>
+      <option>Weekends</option>
+      <option>Evenings</option>
+      <option>Mornings</option>
+    </select>
+    <div class="flex w-full sm:w-auto items-center gap-2">
+      <input type="text" placeholder="Search..." class="px-4 py-2 rounded border shadow w-full text-sm" />
+      <button class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 text-sm">Search</button>
+    </div>
+  </div>
+
+  <!-- Profile List -->
+  <div class="max-w-6xl mx-auto px-4 mt-8 space-y-6">
+    <!-- Single Profile Card -->
+    <div id="divLink" class="bg-white rounded-xl shadow-md p-4 flex flex-col sm:flex-row items-center justify-between" >
+      <div class="flex gap-4 items-center">
+        <div class="w-20 h-20 bg-gray-200 border border-gray-400 flex items-center justify-center text-xs">Profile Photo</div>
+        <div>
+          <h2 class="text-lg font-semibold" id="name"></h2>
+          <p class="text-green-700 text-sm mt-1">Skills Offered: <span class="inline-block bg-gray-100 rounded-full px-3 py-1 mx-1 text-sm" id="skills_offer"></span></p>
+          <p class="text-blue-700 text-sm mt-1">Skills Wanted: <span class="inline-block bg-gray-100 rounded-full px-3 py-1 mx-1 text-sm" id="skills_require"></span></p>
+        </div>
+      </div>
+      <div class="flex flex-col sm:items-end mt-4 sm:mt-0">
+        <p class="text-sm mb-1">Rating: 3.9/5</p>
+        <button onclick="checkLogin()" class="bg-sky-400 text-white px-4 py-2 rounded hover:bg-sky-500">Request</button>
+      </div>
+    </div>
+    <script>
+  // Fetch user info and populate profile card
+  fetch('/user_profile?email=marc@example.com')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('name').textContent = data.name;
+      document.getElementById('skills_offer').textContent = data.skills_offer;
+      document.getElementById('skills_require').textContent = data.skills_require;
+    })
+    .catch(error => {
+      console.error('Error fetching user profile:', error);
+    });
+
+  document.getElementById('divLink').addEventListener('click', function () {
+    window.location.href = 'profile.html';
+  });
+
+  // Utility: Check if user is logged in (example using localStorage, adjust as needed)
+  function isUserLoggedIn() {
+    // For demo: check if 'user_email' exists in localStorage
+    return !!localStorage.getItem('user_email');
+  }
+
+  // When a profile card is clicked, redirect to swap request form with user id in URL
+  function openSwapRequest(userId) {
+    if (!isUserLoggedIn()) {
+      window.location.href = 'login page.html';
+    } else {
+      window.location.href = `Screen 4 request window.html?user_id=${userId}`;
+    }
+  }
+
+  // Dynamically create profile cards for each user
+  fetch('/all_users')
+    .then(response => response.json())
+    .then(users => {
+      const container = document.querySelector('.max-w-6xl.mx-auto.px-4.mt-8.space-y-6');
+      container.innerHTML = ''; // Clear existing cards
+      users.forEach(user => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl shadow-md p-4 flex flex-col sm:flex-row items-center justify-between cursor-pointer';
+        card.innerHTML = `
+          <div>
+            <h2 class="text-lg font-semibold">${user.name}</h2>
+            <p>Skills Offered: <span>${user.skills_offer}</span></p>
+            <p>Skills Wanted: <span>${user.skills_require}</span></p>
+          </div>
+          <button class="bg-sky-400 text-white px-4 py-2 rounded hover:bg-sky-500">Request</button>
+        `;
+        card.querySelector('button').onclick = () => openSwapRequest(user.id);
+        container.appendChild(card);
+      });
+    });
+</script>
+
+    <!-- Pagination -->
+    <div class="flex justify-center items-center space-x-2 mt-10">
+      <button class="px-2 py-1 border rounded">&lt;</button>
+      <button class="px-3 py-1 border rounded bg-indigo-500 text-white">1</button>
+      <button class="px-3 py-1 border rounded">2</button>
+      <button class="px-3 py-1 border rounded">3</button>
+      <button class="px-2 py-1 border rounded">&gt;</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-4 mt-10">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <p class="text-sm">&copy; 2023 Skill Swap Platform. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
