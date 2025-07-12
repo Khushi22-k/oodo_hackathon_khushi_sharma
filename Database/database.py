@@ -1,12 +1,15 @@
-import sqlite3
-from sqlite3 import Error
+import mysql.connector
+from mysql.connector import Error
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-class SimpleSQLiteDatabase:
-    def __init__(self, db_file="my_simple_app.db"):
-        self.db_file = db_file
+class SimpleMySQLDatabase:
+    def __init__(self, host="localhost", user="root", password="1234", database="my_simple_app"):
+        self.host = host
+        self.user = user
+        self.password = password
+        self.database = database
         self.conn = None
         self.cur = None
         self._connect()
@@ -14,22 +17,18 @@ class SimpleSQLiteDatabase:
 
     def _connect(self):
         try:
-            self.conn = sqlite3.connect(self.db_file, check_same_thread=False)
+            self.conn = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password,
+                database=self.database
+            )
             self.cur = self.conn.cursor()
-            print(f"Connected to SQLite database: {self.db_file}")
+            print(f"Connected to MySQL database: {self.database}")
         except Error as e:
-            print(f"Error connecting to SQLite database: {e}")
+            print(f"Error connecting to MySQL database: {e}")
             self.conn = None
             self.cur = None
-
-    def _close(self):
-        if self.cur:
-            self.cur.close()
-            self.cur = None
-        if self.conn:
-            self.conn.close()
-            self.conn = None
-            print("SQLite database connection closed.")
 
     def _execute_query(self, query, params=None, fetch=False):
         if not self.conn or not self.cur:
@@ -51,11 +50,11 @@ class SimpleSQLiteDatabase:
     def create_users_table(self):
         query = """
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            age INTEGER,
-            password TEXT NOT NULL,
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) UNIQUE NOT NULL,
+            age INT,
+            password VARCHAR(255) NOT NULL,
             skills_offer TEXT,
             skills_require TEXT
         );
@@ -64,13 +63,13 @@ class SimpleSQLiteDatabase:
         return self._execute_query(query)
 
     def add_user(self, name, email, password, age=None, skills_offer="", skills_require=""):
-        query = "INSERT INTO users (name, email, password, age, skills_offer, skills_require) VALUES (?, ?, ?, ?, ?, ?);"
+        query = "INSERT INTO users (id,name, email, password, age, skills_offer, skills_require) VALUES (%s, %s, %s, %s, %s, %s);"
         params = (name, email, password, age, skills_offer, skills_require)
         print(f"Attempting to add user: {name} ({email})")
         return self._execute_query(query, params)
 
     def get_user_by_email(self, email):
-        query = "SELECT * FROM users WHERE email = ?;"
+        query = "SELECT * FROM users WHERE email = %s;"
         print(f"Attempting to get user by email: {email}")
         user = self._execute_query(query, (email,), fetch=True)
         return user[0] if user else None
@@ -81,17 +80,17 @@ class SimpleSQLiteDatabase:
         return self._execute_query(query, fetch=True)
 
     def update_user_age(self, email, new_age):
-        query = "UPDATE users SET age = ? WHERE email = ?;"
+        query = "UPDATE users SET age = %s WHERE email = %s;"
         params = (new_age, email)
         print(f"Attempting to update age for user {email} to {new_age}")
         return self._execute_query(query, params)
 
     def delete_user(self, email):
-        query = "DELETE FROM users WHERE email = ?;"
+        query = "DELETE FROM users WHERE email = %s;"
         print(f"Attempting to delete user: {email}")
         return self._execute_query(query, (email,))
 
-db = SimpleSQLiteDatabase("my_simple_app.db")
+db = SimpleMySQLDatabase(host="localhost", user="root", password="your_mysql_password", database="my_simple_app")
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -148,7 +147,7 @@ def all_users():
 @app.route('/user_by_id')
 def user_by_id():
     user_id = request.args.get('id')
-    query = "SELECT id, name, skills_offer, skills_require FROM users WHERE id = ?;"
+    query = "SELECT id, name, skills_offer, skills_require FROM users WHERE id = %s;"
     user = db._execute_query(query, (user_id,), fetch=True)
     if user:
         user = user[0]
@@ -168,14 +167,14 @@ def swap_skills():
     offered_skill = data.get('offered_skill')
     wanted_skill = data.get('wanted_skill')
     login_user = db.get_user_by_email(login_email)
-    viewed_user = db._execute_query("SELECT * FROM users WHERE id = ?", (viewed_user_id,), fetch=True)
+    viewed_user = db._execute_query("SELECT * FROM users WHERE id = %s", (viewed_user_id,), fetch=True)
     if not login_user or not viewed_user:
         return jsonify({'success': False, 'error': 'User not found'})
     viewed_user = viewed_user[0]
     login_skills_offer = [s.strip() for s in login_user[5].split(',') if s.strip() != offered_skill]
     viewed_skills_require = [s.strip() for s in viewed_user[6].split(',') if s.strip() != wanted_skill]
-    db._execute_query("UPDATE users SET skills_offer = ? WHERE email = ?", (','.join(login_skills_offer), login_email))
-    db._execute_query("UPDATE users SET skills_require = ? WHERE id = ?", (','.join(viewed_skills_require), viewed_user_id))
+    db._execute_query("UPDATE users SET skills_offer = %s WHERE email = %s", (','.join(login_skills_offer), login_email))
+    db._execute_query("UPDATE users SET skills_require = %s WHERE id = %s", (','.join(viewed_skills_require), viewed_user_id))
     return jsonify({'success': True})
 
 if __name__ == "__main__":
