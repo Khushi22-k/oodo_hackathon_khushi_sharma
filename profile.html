@@ -51,9 +51,8 @@
         <h2 class="text-2xl font-semibold">Khushi Sharma</h2>
         <p class="text-gray-600">📍 Location: Delhi, India</p>
         <p class="text-gray-600">🕒 Availability: Evenings, Weekends</p>
-        <div class="flex gap-4 mt-2">
-          <button class="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition">Edit Profile</button>
-          <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Make Private</button>
+        <div class="flex gap-4 mt-2" id="profile-action-buttons">
+          <!-- Buttons will be inserted here by JS -->
         </div>
       </div>
     </div>
@@ -104,6 +103,34 @@
           li.textContent = skill.trim();
           wantedList.appendChild(li);
         });
+
+        // Show correct status button
+        const actionDiv = document.getElementById('profile-action-buttons');
+        actionDiv.innerHTML = '';
+        if (data.status === 'public') {
+          // Show "Make Private" button
+          const btn = document.createElement('button');
+          btn.className = 'px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition';
+          btn.textContent = 'Make Private';
+          actionDiv.appendChild(btn);
+        } else if (data.status === 'private') {
+          // Show "Make Public" button
+          const btn = document.createElement('button');
+          btn.className = 'px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition';
+          btn.textContent = 'Make Public';
+          actionDiv.appendChild(btn);
+        }
+        else{
+          const btn = document.createElement('button');
+          btn.className = 'px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition';
+          btn.textContent='Make Public';
+          actionDiv.appendChild(btn);
+        }
+        // Optionally, add Edit Profile button
+        const editBtn = document.createElement('button');
+        editBtn.className = 'px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition';
+        editBtn.textContent = 'Edit Profile';
+        actionDiv.appendChild(editBtn);
       });
   </script>
 </body>
