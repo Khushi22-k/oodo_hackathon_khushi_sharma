@@ -79,6 +79,15 @@
                               focus:outline-none focus:ring-2 focus:ring-dark-purple-header focus:border-transparent"
                        placeholder="e.g. Public Speaking, Excel">
             </div>
+            <div>
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select id="status" name="status"
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm
+                               focus:outline-none focus:ring-2 focus:ring-dark-purple-header focus:border-transparent">
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                </select>
+            </div>
             <button type="submit"
                     class="w-full bg-dark-purple-header text-white py-2 px-4 rounded-md font-semibold
                            hover:bg-purple-700 transition duration-300 shadow-md">
@@ -97,6 +106,7 @@ document.getElementById('registerForm').addEventListener('submit', function(even
     const confirm_password = document.getElementById('confirm_password').value;
     const skills_offer = document.getElementById('skills_offer').value;
     const skills_require = document.getElementById('skills_require').value;
+    const status = document.getElementById('status').value;
 
     if (password !== confirm_password) {
         alert('Passwords do not match!');
@@ -107,7 +117,7 @@ document.getElementById('registerForm').addEventListener('submit', function(even
     fetch('/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, skills_offer, skills_require })
+        body: JSON.stringify({ name, email, password, skills_offer, skills_require, status })
     })
     .then(response => response.json())
     .then(data => {

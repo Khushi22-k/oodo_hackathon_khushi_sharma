@@ -56,7 +56,8 @@ class SimpleMySQLDatabase:
             age INT,
             password VARCHAR(255) NOT NULL,
             skills_offer TEXT,
-            skills_require TEXT
+            skills_require TEXT,
+            status TEXT
         );
         """
         print("Attempting to create 'users' table with skills fields.")
